@@ -8,11 +8,40 @@ var http = require('http');
 var url = require('url');
 var stringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
+var fs = reqire('fs');
+var https = require('https');
 
 //The server must respond any request with a string
 
-var server = http.createServer(function(req,res){
-    
+var httpServer = http.createServer(function(req,res){
+    unifiedServer(req,res);
+});
+
+//Tell that the server is on 
+httpServer.listen(config.httpPort, function(){
+    console.log(`The server is listening on ${config.httpPort} now!`);
+});
+
+//Load the https docs
+httpsOptions = {
+    'key' : fs.readFileSync('./https/key.pem'),
+    'cert' : fs.readFileSync('./https/cert.pem')
+};
+
+//Create an https port
+httpsServer = https.createServer(httpsOptions,function(req,res){
+    unifiedServer(req,res);
+});
+
+//listenHTTPS 
+httpsServer.listen(config.httpsPort, function(){
+    console.log(`The server is listening on port ${config.httpsPort} now!`);
+});
+
+
+//Unify the http and http ports
+
+var unifiedServer = function(req,res){
     //get the url and parse it
     var parsedURL = url.parse(req.url, true);
     
@@ -78,13 +107,10 @@ var server = http.createServer(function(req,res){
         console.log("The request is received in " + trimmedPath)
 
     });
+};
 
-});
 
-//Tell that the server is on 
-server.listen(config.port, function(){
-    console.log(`The server is listening on ${config.port} now!`);
-});
+
 
 //Define handlers for API Calls
 
@@ -92,17 +118,26 @@ var handlers = {};
 
 //for each path, we will make a callback to take an HTTP status call and a payload object
 
-handlers.sample = function(data, callback){
-    callback(406, {'sample': 'sample handler'});
-}
+handlers.ping = function(data, callback){
+    callback(200);
+};
 
 handlers.notFound = function(data, callback){
     callback(404);
+
+};
+
+handlers.hello = function(data,callback){
+    callback(200, {'handshake' : true, 'response' : 'Hi, how are you?'})
 }
+
+
+
 
 // define a router
 
 var router = {
-    'sample' : handlers.sample
+    'ping' : handlers.ping,
+    'hello' : handlers.hello
 };
 

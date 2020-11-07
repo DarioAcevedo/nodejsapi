@@ -7,12 +7,14 @@ var environments = {};
 //Staging objects that are the environments
 
 environments.staging = {
-    'port' : 3000, 
+    'httpPort' : 3000,
+    'httpsPort' : 30001,
     'envName' : 'staging'
 };
 
 environments.production = {
-    'port' : 443,
+    'httpPort' : 80,
+    'httpsPort' : 443,
     'envName' : 'production'
 }
 
