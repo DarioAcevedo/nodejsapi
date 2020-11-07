@@ -8,7 +8,7 @@ var http = require('http');
 var url = require('url');
 var stringDecoder = require('string_decoder').StringDecoder;
 var config = require('./config');
-var fs = reqire('fs');
+var fs = require('fs');
 var https = require('https');
 
 //The server must respond any request with a string
@@ -21,6 +21,8 @@ var httpServer = http.createServer(function(req,res){
 httpServer.listen(config.httpPort, function(){
     console.log(`The server is listening on ${config.httpPort} now!`);
 });
+
+/* This is the config for https port
 
 //Load the https docs
 httpsOptions = {
@@ -38,6 +40,7 @@ httpsServer.listen(config.httpsPort, function(){
     console.log(`The server is listening on port ${config.httpsPort} now!`);
 });
 
+*/
 
 //Unify the http and http ports
 
